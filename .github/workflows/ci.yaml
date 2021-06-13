@@ -1,0 +1,43 @@
+name: ci
+on:
+ push:
+   branches:
+    -  0605-2021
+jobs:
+  Dockerfile:
+    runs-on: ubuntu-18.04
+    steps:
+        - name: checkout
+          uses: actions/checkout@v2
+        - name: build-hasher
+          run: docker image build --file Dockerfile --tag index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-hasher ${PWD}/hasher
+        - name: build-rng
+          run: docker image build --file Dockerfile --tag index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-rng ${PWD}/rng
+        - name: build-webui
+          run: docker image build --file Dockerfile --tag index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-webui ${PWD}/webui
+        - name: build-worker
+          run: docker image build --file Dockerfile --tag index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-worker ${PWD}/worker
+        - name: network-hasher
+          run: docker create hasher-network
+        - name: network-redis
+          run: docker create redis-network
+        - name: network-rng
+          run: docker create rng-network
+        - name: run-redis
+          run: docker container run --detach --entrypoint docker-entrypoint.sh --name redis-test --network redis-network --volume redis-volume:/data --workdir /data redis:alpine redis-server
+        - name: run-hasher
+          run: docker container run --detach --entrypoint ruby --name hasher-test --network hasher-network --workdir /src index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-hasher hasher.rb
+        - name: run-rng
+          run: docker container run --detach --entrypoint python --name rng-test --network rng-network --workdir /src index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-rng rng.py
+        - name: run-webui
+          run: docker container run --detach --entrypoint python --name webui-test --network redis-network --workdir /src index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-webui webui.js
+        - name: run-worker
+          run: docker container run --detach --entrypoint python --name worker-test --network redis-network --workdir /src index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-worker worker.py
+        - name: run
+          run: docker container run --detach --entrypoint php  --name php-test --workdir /src index.docker.io/ramjmeka/caltech-phpinfo:test -f index.php -S 0.0.0.0:8080
+        - name: connect-hasher
+          run: docker network connect hasher-network worker-test
+        - name: connect-rng
+          run: docker network connect rng-network worker-test
+        - name: logs
+          run: while true ; do sleep 10 && docker container logs worker-test 2>& 1 | grep 'coin found' && break ; done
