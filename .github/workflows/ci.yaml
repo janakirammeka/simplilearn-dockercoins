@@ -18,11 +18,11 @@ jobs:
         - name: build-worker
           run: docker image build --file worker/Dockerfile --tag index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-worker worker
         - name: network-hasher
-          run: docker create hasher-network
+          run: docker network create hasher-network
         - name: network-redis
-          run: docker create redis-network
+          run: docker network create redis-network
         - name: network-rng
-          run: docker create rng-network
+          run: docker network create rng-network
         - name: run-redis
           run: docker container run --detach --entrypoint docker-entrypoint.sh --name redis-test --network redis-network --volume redis-volume:/data --workdir /data redis:alpine redis-server
         - name: run-hasher
