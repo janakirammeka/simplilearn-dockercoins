@@ -38,4 +38,4 @@ jobs:
         - name: connect-rng
           run: docker network connect rng-network worker-test
         - name: logs
-          run:  docker container logs worker-test
+          run:  docker ps -q | xargs -L 1 docker logs
