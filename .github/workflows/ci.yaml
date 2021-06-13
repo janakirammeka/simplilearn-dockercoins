@@ -2,7 +2,7 @@ name: ci
 on:
  push:
    branches:
-    -  0605-2021
+    -  2021-06
 jobs:
   Dockerfile:
     runs-on: ubuntu-18.04
@@ -10,13 +10,13 @@ jobs:
         - name: checkout
           uses: actions/checkout@v2
         - name: build-hasher
-          run: docker image build --file Dockerfile --tag index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-hasher ${PWD}/hasher
+          run: docker image build --file Dockerfile --tag index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-hasher hasher
         - name: build-rng
-          run: docker image build --file Dockerfile --tag index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-rng ${PWD}/rng
+          run: docker image build --file Dockerfile --tag index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-rng rng
         - name: build-webui
-          run: docker image build --file Dockerfile --tag index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-webui ${PWD}/webui
+          run: docker image build --file Dockerfile --tag index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-webui webui
         - name: build-worker
-          run: docker image build --file Dockerfile --tag index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-worker ${PWD}/worker
+          run: docker image build --file Dockerfile --tag index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-worker worker
         - name: network-hasher
           run: docker create hasher-network
         - name: network-redis
@@ -33,8 +33,6 @@ jobs:
           run: docker container run --detach --entrypoint python --name webui-test --network redis-network --workdir /src index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-webui webui.js
         - name: run-worker
           run: docker container run --detach --entrypoint python --name worker-test --network redis-network --workdir /src index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-worker worker.py
-        - name: run
-          run: docker container run --detach --entrypoint php  --name php-test --workdir /src index.docker.io/ramjmeka/caltech-phpinfo:test -f index.php -S 0.0.0.0:8080
         - name: connect-hasher
           run: docker network connect hasher-network worker-test
         - name: connect-rng
