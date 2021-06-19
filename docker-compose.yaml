@@ -2,10 +2,9 @@ networks:
   hasher-network:
     internal: true
   redis-network:
-     internal: true
+    internal: true
   rng-network:
-      internal: true
-
+    internal: true
 services:
   hasher:
     command: hasher.rb
@@ -20,7 +19,6 @@ services:
     networks:
       - hasher-network
     working_dir: /src
-
   redis:
     command: redis-server
     deploy:
@@ -28,43 +26,42 @@ services:
       placement:
         constraints:
           - node.role == worker
-      replicas: 2
-    entrypoint: redis
+      replicas: 1
+    entrypoint: docker-entrypoint.sh
     image: redis:alpine
     networks:
-     - redis-network
-    working_dir: /data
+      - redis-network
     volumes:
-     -redis-volume: /data
- rng:
-   command: rng.py
-   deploy:
-      mode: replicated
-      placement:
-        constraints:
-          - node.role == worker
-    replicas: 2
-    entrypoint: python
-    image: index.docker.io/ramjmeka/caltech-dockercoins-2021-06:1.0-rng
-    networks:
-     - rng-network
-    working_dir: /src
-
-  webui:
-   command: webui.js
+      - redis-volume:/data
+    working_dir: /data
+  rng:
+    command: rng.py
     deploy:
       mode: replicated
       placement:
         constraints:
           - node.role == worker
       replicas: 2
-      entrypoint: node
+    entrypoint: python
+    image: index.docker.io/ramjmeka/caltech-dockercoins-2021-06:1.0-rng
+    networks:
+      - rng-network
+    working_dir: /src
+  webui:
+    command: webui.js
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.role == worker
+      replicas: 2
+    entrypoint: node
     image: index.docker.io/ramjmeka/caltech-dockercoins-2021-06:1.0-webui
     networks:
-     - redis-network
-    ports: 80:80
+      - redis-network
+    ports:
+      - 80:80
     working_dir: /src
-
   worker:
     command: worker.py
     deploy:
@@ -73,15 +70,13 @@ services:
         constraints:
           - node.role == worker
       replicas: 2
-      entrypoint: python
+    entrypoint: python
     image: index.docker.io/ramjmeka/caltech-dockercoins-2021-06:1.0-worker
     networks:
-     - redis-network
-     - rng-network
-     - hasher-network
+      - hasher-network
+      - redis-network
+      - rng-network
     working_dir: /src
-
 version: '3.8'
-
 volumes:
   redis-volume:
