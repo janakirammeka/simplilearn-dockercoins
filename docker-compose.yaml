@@ -36,7 +36,6 @@ services:
     working_dir: /data
     volumes:
       -redis-volume: /data
-
  rng:
    command: rng.py
    deploy:
