@@ -43,7 +43,7 @@ services:
       mode: replicated
       placement:
         constraints:
-          - node.role == worker
+         - node.role == worker
     replicas: 2
     entrypoint: python
     image: index.docker.io/ramjmeka/caltech-dockercoins-2021-06:1.0-rng
