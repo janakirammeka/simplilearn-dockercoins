@@ -10,7 +10,7 @@ services:
   hasher:
     command: hasher.rb
     deploy:
-      mode: replicated 
+      mode: replicated
       placement:
         constraints:
           - node.role == worker
@@ -20,10 +20,11 @@ services:
     networks:
       - hasher-network
     working_dir: /src
+
   redis:
     command: redis-server
     deploy:
-      mode: replicated 
+      mode: replicated
       placement:
         constraints:
           - node.role == worker
@@ -35,24 +36,25 @@ services:
     working_dir: /data
     volumes:
       -redis-volume: /data
-     
+
   rng:
    command: rng.py
    deploy:
-      mode: replicated 
+      mode: replicated
       placement:
         constraints:
           - node.role == worker
       replicas: 2
-      entrypoint: python 
+      entrypoint: python
     image: index.docker.io/ramjmeka/caltech-dockercoins-2021-06:1.0-rng
     networks:
      - rng-network
     working_dir: /src
+
   webui:
    command: webui.js
     deploy:
-      mode: replicated 
+      mode: replicated
       placement:
         constraints:
           - node.role == worker
@@ -61,11 +63,13 @@ services:
     image: index.docker.io/ramjmeka/caltech-dockercoins-2021-06:1.0-webui
     networks:
      - redis-network
+    ports: 80:80
     working_dir: /src
+
   worker:
     command: worker.py
     deploy:
-      mode: replicated 
+      mode: replicated
       placement:
         constraints:
           - node.role == worker
@@ -77,8 +81,8 @@ services:
      - rng-network
      - hasher-network
     working_dir: /src
+
 version: '3.8'
 
 volumes:
   redis-volume:
-
