@@ -45,7 +45,7 @@ services:
         constraints:
           - node.role == worker
       replicas: 2
-      entrypoint: python
+    entrypoint: python
     image: index.docker.io/ramjmeka/caltech-dockercoins-2021-06:1.0-rng
     networks:
      - rng-network
