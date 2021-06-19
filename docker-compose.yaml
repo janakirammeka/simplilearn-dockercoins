@@ -17,7 +17,7 @@ services:
       replicas: 2
       entrypoint: ruby
     image: index.docker.io/ramjmeka/caltech-dockercoins-2021-06:1.0-hasher
-    network:
+    networks:
       - hasher-network
     working_dir: /src
   redis:
@@ -30,7 +30,7 @@ services:
       replicas: 2
       entrypoint: redis
     image: redis:alpine
-    network:
+    networks:
      - redis-network
     working_dir: /data
     volumes:
@@ -46,7 +46,7 @@ services:
       replicas: 2
       entrypoint: python 
     image: index.docker.io/ramjmeka/caltech-dockercoins-2021-06:1.0-rng
-    network:
+    networks:
      - rng-network
     working_dir: /src
   webui:
@@ -59,7 +59,7 @@ services:
       replicas: 2
       entrypoint: node
     image: index.docker.io/ramjmeka/caltech-dockercoins-2021-06:1.0-webui
-    network:
+    networks:
      - redis-network
     working_dir: /src
   worker:
@@ -72,7 +72,7 @@ services:
       replicas: 2
       entrypoint: python
     image: index.docker.io/ramjmeka/caltech-dockercoins-2021-06:1.0-worker
-    network:
+    networks:
      - redis-network
      - rng-network
      - hasher-network
