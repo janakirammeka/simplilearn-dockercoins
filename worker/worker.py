@@ -14,7 +14,7 @@ else:
     logging.getLogger("requests").setLevel(logging.WARNING)
 
 
-redis = Redis("redis")
+redis = Redis("redis-test")
 
 
 def get_random_bytes():
