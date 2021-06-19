@@ -30,7 +30,7 @@ jobs:
         - name: run-rng
           run: docker container run --detach --entrypoint python --name rng-test --network rng-network --workdir /src index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-rng rng.py
         - name: run-webui
-          run: docker container run --detach --entrypoint python --name webui-test --network redis-network --workdir /src index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-webui webui.js
+          run: docker container run --detach --entrypoint node --name webui-test --network redis-network --workdir /src index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-webui webui.js
         - name: run-worker
           run: docker container run --detach --entrypoint python --name worker-test --network redis-network --workdir /src index.docker.io/ramjmeka/simplilearn-dockercoins-2021-06:test-worker worker.py
         - name: connect-hasher
