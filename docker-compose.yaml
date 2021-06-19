@@ -15,7 +15,7 @@ services:
         constraints:
           - node.role == worker
       replicas: 2
-      entrypoint: ruby
+    entrypoint: ruby
     image: index.docker.io/ramjmeka/caltech-dockercoins-2021-06:1.0-hasher
     networks:
       - hasher-network
@@ -29,13 +29,13 @@ services:
         constraints:
           - node.role == worker
       replicas: 2
-      entrypoint: redis
+    entrypoint: redis
     image: redis:alpine
     networks:
      - redis-network
     working_dir: /data
     volumes:
-      -redis-volume: /data
+     -redis-volume: /data
  rng:
    command: rng.py
    deploy:
