@@ -11,3 +11,4 @@ node {
            sh 'echo "Tests passed"'        
             }    
         }     
+}
